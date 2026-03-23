@@ -12,11 +12,152 @@
   box-sizing: border-box;
 }
 
-.glassCard{
-  background:  rgba(225,225,225,0.18);
-  box-shadow:  0 8px 32px 0 rgba(31,38,135,0.37);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 10px;
-  border: 1px solid rgba(225,225,225,0.18);
+body {
+  overflow-x: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.glassCard {
+  background: rgba(225, 225, 225, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+}
+
+.mainWeatherCard:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+}
+
+.forecastCard:hover {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.weatherStatCard {
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.weatherStatCard:hover {
+  transform: scale(1.03);
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.weather-temp-glow {
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
+}
+
+/* SUN */
+.icon-sun {
+  animation: sunSpin 9s linear infinite, sunGlow 2.8s ease-in-out infinite;
+}
+
+/* CLOUD */
+.icon-cloud {
+  animation: cloudFloat 3.4s ease-in-out infinite;
+}
+
+/* RAIN */
+.icon-rain {
+  animation: rainFloat 2.2s ease-in-out infinite;
+}
+
+/* FOG */
+.icon-fog {
+  animation: fogDrift 3.8s ease-in-out infinite;
+}
+
+/* STORM */
+.icon-storm {
+  animation: stormPulse 1.5s ease-in-out infinite;
+}
+
+/* SNOW */
+.icon-snow {
+  animation: snowFloat 3s ease-in-out infinite;
+}
+
+/* WIND */
+.icon-wind {
+  animation: windSwing 2.2s ease-in-out infinite;
+}
+
+@keyframes sunSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sunGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255, 213, 79, 0.55));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(255, 213, 79, 0.95));
+  }
+}
+
+@keyframes cloudFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes rainFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.03);
+  }
+}
+
+@keyframes fogDrift {
+  0%, 100% {
+    transform: translateX(0px);
+    opacity: 0.95;
+  }
+  50% {
+    transform: translateX(8px);
+    opacity: 0.78;
+  }
+}
+
+@keyframes stormPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.5));
+  }
+}
+
+@keyframes snowFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(6deg);
+  }
+}
+
+@keyframes windSwing {
+  0%, 100% {
+    transform: translateX(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateX(7px) rotate(4deg);
+  }
 }

@@ -1,98 +1,54 @@
-import React, { useEffect, useState } from 'react'
-import sun from '../assets/icons/sun.png'
-import cloud from '../assets/icons/cloud.png'
-import fog from '../assets/icons/fog.png'
-import rain from '../assets/icons/rain.png'
-import snow from '../assets/icons/snow.png'
-import storm from '../assets/icons/storm.png'
-import wind from '../assets/icons/windy.png'
+/* eslint-disable react/prop-types */
+import React from "react";
 
-const MiniCard = ({ time, temp, iconString, index }) => {
-  const [icon, setIcon] = useState(cloud)
-  const [animatedTemp, setAnimatedTemp] = useState(0)
+const MiniCard = ({ dt, temp, iconCode, timezone, condition }) => {
+  const getWeatherIconUrl = (code) =>
+    code ? `https://openweathermap.org/img/wn/${code}@2x.png` : "";
 
-  useEffect(() => {
-    if (iconString) {
-      if (iconString.toLowerCase().includes('cloud')) {
-        setIcon(cloud)
-      } else if (iconString.toLowerCase().includes('rain')) {
-        setIcon(rain)
-      } else if (iconString.toLowerCase().includes('clear')) {
-        setIcon(sun)
-      } else if (iconString.toLowerCase().includes('thunder')) {
-        setIcon(storm)
-      } else if (iconString.toLowerCase().includes('fog')) {
-        setIcon(fog)
-      } else if (iconString.toLowerCase().includes('snow')) {
-        setIcon(snow)
-      } else if (iconString.toLowerCase().includes('wind')) {
-        setIcon(wind)
-      } else {
-        setIcon(cloud)
-      }
-    }
-  }, [iconString])
+  const getAnimationClass = (code = "") => {
+    if (code.startsWith("01")) return "icon-sun";
+    if (["02", "03", "04"].some((prefix) => code.startsWith(prefix))) return "icon-cloud";
+    if (["09", "10"].some((prefix) => code.startsWith(prefix))) return "icon-rain";
+    if (code.startsWith("11")) return "icon-storm";
+    if (code.startsWith("13")) return "icon-snow";
+    if (code.startsWith("50")) return "icon-fog";
+    return "icon-cloud";
+  };
 
-  // Animate temperature
-  useEffect(() => {
-    if (temp) {
-      const targetTemp = Math.round(temp)
-      let current = 0
-      const increment = targetTemp / 15
-      
-      const timer = setInterval(() => {
-        current += increment
-        if (current >= targetTemp) {
-          setAnimatedTemp(targetTemp)
-          clearInterval(timer)
-        } else {
-          setAnimatedTemp(Math.round(current))
-        }
-      }, 80)
-      
-      return () => clearInterval(timer)
-    }
-  }, [temp])
+  const getWeekday = (unixDt, timezoneOffset = 0) => {
+    const utcDate = new Date((unixDt + timezoneOffset) * 1000);
+    return utcDate.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
+  };
 
-  const dayName = new Date(time).toLocaleDateString('en', { weekday: 'short' })
-  const date = new Date(time).getDate()
-  const month = new Date(time).toLocaleDateString('en', { month: 'short' })
+  const animationClass = getAnimationClass(iconCode);
 
   return (
-    <div 
-      className='mini-card group'
-      style={{ animationDelay: `${index * 0.1}s` }}
-    >
-      {/* Date Header */}
-      <div className='text-center mb-4'>
-        <p className='font-bold text-white text-sm mb-1'>{dayName}</p>
-        <p className='text-gray-400 text-xs'>{date} {month}</p>
+    <div className="glassCard forecastCard w-[11rem] min-h-[12.5rem] h-auto p-4 flex flex-col justify-between">
+      <div className="text-center font-semibold text-[1.05rem] tracking-wide">
+        {getWeekday(dt, timezone)}
       </div>
-      
-      {/* Weather Icon */}
-      <div className='my-4 flex justify-center transform transition-all duration-500 group-hover:scale-110'>
-        <img 
-          src={icon} 
-          alt="weather icon" 
-          className='w-12 h-12 weather-icon' 
-        />
+
+      <hr className="my-2 border-white/40" />
+
+      <div className="w-full flex justify-center items-center flex-1">
+        {iconCode && (
+          <img
+            src={getWeatherIconUrl(iconCode)}
+            alt="forecast icon"
+            className={`w-[5rem] h-[5rem] object-contain drop-shadow-2xl ${animationClass}`}
+          />
+        )}
       </div>
-      
-      {/* Temperature */}
-      <div className='text-center'>
-        <p className='font-bold text-white text-xl mb-2'>
-          {animatedTemp}°
-        </p>
-        {/* Temperature Bar */}
-        <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-1000 ease-out"
-            style={{ width: `${Math.min((animatedTemp / 40) * 100, 100)}%` }}
-          ></div>
-        </div>
+
+      <div className="text-center font-bold text-[1.9rem] weather-temp-glow">
+        {Math.round(temp)}&deg;C
+      </div>
+
+      <div className="text-center text-xs opacity-80 mt-1">
+        {condition} {iconCode?.endsWith("n") ? "(Night)" : "(Day)"}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MiniCard
+export default MiniCard;
